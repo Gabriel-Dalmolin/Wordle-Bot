@@ -14,7 +14,7 @@ def get_c_df(words : pd.DataFrame, yellow, green, tested):
     for w in words.itertuples():
         mtch = True
         for letter in green.keys():
-            if w.word[green[letter]] != letter:
+            if w.word[green[letter]] != letter: # type: ignore
                 mtch = False
                 break  
         for letter in yellow.keys():
@@ -23,7 +23,7 @@ def get_c_df(words : pd.DataFrame, yellow, green, tested):
                 break
             else:
                 for i in yellow[letter]:
-                    if w.word[i] == letter:
+                    if w.word[i] == letter: # type: ignore
                         mtch = False
                         break
         
