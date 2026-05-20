@@ -2,6 +2,7 @@ import math
 import random
 
 import pandas as pd
+from torch import le
 
 K = 2
 M = 8
@@ -26,6 +27,11 @@ def get_c_df(words : pd.DataFrame, yellow, green, tested):
                     if w.word[i] == letter: # type: ignore
                         mtch = False
                         break
+
+        for letter in w.word: # type: ignore
+            if letter in tested: # type: ignore
+                mtch = False
+                break  
         
         if mtch:
             matches.append(w.word)
@@ -48,8 +54,11 @@ def get_c_df(words : pd.DataFrame, yellow, green, tested):
     df = pd.DataFrame(rows, columns=["word", "c"])
 
     if len(matches) == 1:   
-        df.loc[matches[0], "c"] = 9999999999
+        df.loc[df["word"] == matches[0], "c"] = 9999999999
         print("Just one Match!:", matches[0])
+    if len(matches) == 2:   
+        df.loc[df["word"] == matches[0], "c"] = 9999999999
+        print("Two Matches!:", matches[0])
 
     df.sort_values('c', ascending=False, inplace=True)
     return df
@@ -64,12 +73,14 @@ g = {}
 t = []
 
 while True:
-    word = get_c_df(words, y, g, t).iloc[0].values[0]
+    word = get_c_df(words, y, g, t).iloc[0]['word']
     if (word):
         print(word)
 
     ans = input()
     if ans == "RESET":
+        print("------------------------------------------------\n\n")
+
         y = {}
         g = {}
         t = []
